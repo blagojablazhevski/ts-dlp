@@ -1,27 +1,43 @@
 {
 	"name": "ts-dlp",
 	"version": "0.1.0",
-	"description": "",
-	"main": "index.js",
+	"description": "A human readable TypeScript wrapper for yt-dlp",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
 	"scripts": {
 		"build": "tsc",
 		"dev": "tsx src/index.ts",
-		"start": "node dist/index.js",
-		"lint": "eslint src"
+		"lint": "eslint src",
+		"prepublishOnly": "npm run build"
 	},
-	"keywords": [],
-	"author": "",
+	"keywords": [
+		"yt-dlp",
+		"youtube-dl",
+		"downloader",
+		"wrapper"
+	],
+	"author": "Blagoja Blazhevski",
 	"files": [
 		"dist"
 	],
+	"engines": {
+		"node": ">=18"
+	},
 	"license": "ISC",
 	"type": "module",
 	"devDependencies": {
 		"@types/node": "^25.9.1",
+		"typescript-eslint": "^8.60.0",
 		"eslint": "^10.4.0",
+		"jiti": "^2.7.0",
 		"tsx": "^4.22.3",
-		"typescript": "^6.0.3",
-		"typescript-eslint": "^8.60.0"
+		"typescript": "^6.0.3"
 	},
 	"dependencies": {
 		"execa": "^9.6.1"
