@@ -82,10 +82,7 @@ You write:
 ```ts
 import {download} from "ts-dlp";
 
-await download("https://youtube.com/watch?v=...")
-	.resolution("1080p")
-	.output("downloads")
-	.run();
+await download(url).resolution("1080p").output("downloads").run();
 ```
 
 ---
