@@ -1,10 +1,24 @@
 import {execa, ExecaError} from "execa";
 import {YtDlpError, YtDlpNotFoundError} from "../errors.js";
 
-export async function runYtDlp(args: string[]): Promise<void> {
-	await execa("yt-dlp", ["--js-runtimes", "node", ...args], {
-		stdio: "inherit",
-	}).catch(handleError);
+export interface RunResult {
+	stdout: string;
+	stderr: string;
+}
+
+export async function runYtDlp(
+	args: string[],
+	pipe = false,
+): Promise<RunResult> {
+	const result = await execa(
+		"yt-dlp",
+		["--js-runtimes", "node", ...args],
+		{stdio: pipe ? "pipe" : "inherit"},
+	).catch(handleError);
+	return {
+		stdout: result.stdout ?? "",
+		stderr: result.stderr ?? "",
+	};
 }
 
 function handleError(error: unknown): never {
