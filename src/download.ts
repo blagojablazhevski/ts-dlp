@@ -69,7 +69,7 @@ export class DownloadBuilder {
 	 * If not specified, the file will be saved in the current working directory.
 	 *
 	 * @example
-	 * download("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+	 * download("https://www.example.com/video")
 	 * .output("downloads")
 	 * .run();
 	 *
@@ -88,7 +88,7 @@ export class DownloadBuilder {
 	 * If no codec is specified, it will select the best available audio format regardless of codec.
 	 *
 	 * @example // Specifying an audio codec
-	 * download("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+	 * download("https://www.example.com/video")
 	 * .audio("mp3")
 	 * .run();
 	 *
@@ -106,7 +106,7 @@ export class DownloadBuilder {
 	 * If not specified, it will select the best available video format regardless of extension.
 	 *
 	 * @example
-	 * download("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+	 * download("https://www.example.com/video")
 	 * .format("mp4")
 	 * .run();
 	 *
@@ -142,12 +142,12 @@ export class DownloadBuilder {
 	 * automatically mapped to their values at download time.
 	 *
 	 * @example // Using a string template
-	 * download("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+	 * download("https://www.example.com/video")
 	 * 	.output("downloads")
 	 * 	.filename("%(title)s.%(ext)s")
 	 *
 	 * @example // Using a callback to specify a custom filename template
-	 * download("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+	 * download("https://www.example.com/video")
 	 * 	.output("downloads")
 	 * 	.filename(({ title, ext }) => `${title}.${ext}`)
 	 * 	.run();
@@ -177,7 +177,7 @@ export class DownloadBuilder {
 	 * @throws Will throw an error if yt-dlp is not installed or not in PATH, or if any other error occurs during the execution of yt-dlp.
 	 *
 	 * @example
-	 * download("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+	 * download("https://www.example.com/video")
 	 *  .resolution("720p")
 	 *  .output("downloads/%(title)s.%(ext)s")
 	 *  .run();
