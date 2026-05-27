@@ -117,11 +117,11 @@ await ytdlp
 - [x] `.download(url)`
 - [x] `.run()`
 - [x] `.output(path)`
-- [ ] `.format(format)`
+- [x] `.format(format)`
 - [x] `.audio()`
 - [ ] `.video()`
 - [x] `.resolution()`
-- [ ] `.fps()`
+- [x] `.fps()`
 
 Example:
 
