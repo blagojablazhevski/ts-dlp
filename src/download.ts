@@ -1,5 +1,5 @@
 import {runYtDlp} from "./internal/runner.js";
-import type {AudioCodec, OutputFields, Resolution} from "./types.js";
+import type {AudioCodec, OutputFields, Resolution, VideoExt} from "./types.js";
 
 export class DownloadBuilder {
 	private readonly args: string[] = [];
@@ -7,8 +7,36 @@ export class DownloadBuilder {
 	private audioFormat?: string;
 	private outputDir?: string;
 	private filenameTemplate?: string;
+	private videoExt?: VideoExt;
+	private videoFps?: number;
+	private videoHeight?: string;
 
 	constructor(private readonly url: string) {}
+
+	private buildArgs(): string[] {
+		const args = [...this.args];
+		if (
+			this.videoHeight ||
+			this.videoFps ||
+			this.videoExt ||
+			this.audioFormat
+		) {
+			const heightFilter = this.videoHeight
+				? `[height<=${this.videoHeight}]`
+				: "";
+			const fpsFilter = this.videoFps ? `[fps<=${this.videoFps}]` : "";
+			const extFilter = this.videoExt ? `[ext=${this.videoExt}]` : "";
+			const video = `bestvideo${heightFilter}${fpsFilter}${extFilter}`;
+			const audio = this.audioFormat ?? "bestaudio";
+			args.push("-f", `${video}+${audio}/best`);
+		}
+		if (this.outputDir || this.filenameTemplate) {
+			const dir = this.outputDir ?? "";
+			const file = this.filenameTemplate ?? "%(title)s.%(ext)s";
+			args.push("-o", dir ? `${dir}/${file}` : file);
+		}
+		return args;
+	}
 
 	/**
 	 * Set the desired resolution for the video download.
@@ -19,8 +47,9 @@ export class DownloadBuilder {
 	 * @returns The current instance of DownloadBuilder for method chaining.
 	 */
 	resolution(res: Resolution): this {
-		const height = res.replace("p", "");
-		this.videoFormat = `bestvideo[height<=${height}]`;
+		// const height = res.replace("p", "");
+		// this.videoFormat = `bestvideo[height<=${height}]`;
+		this.videoHeight = res.replace("p", "");
 		return this;
 	}
 
@@ -57,6 +86,29 @@ export class DownloadBuilder {
 	 */
 	audio(codec?: AudioCodec): this {
 		this.audioFormat = codec ? `bestaudio[ext=${codec}]` : "bestaudio";
+		return this;
+	}
+
+	/**
+	 * Set the desired video file extension for the download. You can specify common video extensions like "mp4", "mkv", "webm", etc.
+	 * If specified, the method will select the best available video format that matches the specified extension.
+	 * If not specified, it will select the best available video format regardless of extension.
+	 *
+	 * @example
+	 * download("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+	 * .format("mp4")
+	 * .run();
+	 *
+	 * @param ext The desired video file extension for the download. You can specify common video extensions like "mp4", "mkv", "webm", etc. If specified, the method will select the best available video format that matches the specified extension. If not specified, it will select the best available video format regardless of extension.
+	 * @returns The current instance of DownloadBuilder for method chaining.
+	 */
+	format(ext: VideoExt): this {
+		this.videoExt = ext;
+		return this;
+	}
+
+	fps(fps: number): this {
+		this.videoFps = fps;
 		return this;
 	}
 
@@ -108,17 +160,7 @@ export class DownloadBuilder {
 	 *
 	 */
 	async run(): Promise<void> {
-		const args = [...this.args];
-		if (this.videoFormat || this.audioFormat) {
-			const video = this.videoFormat ?? "bestvideo";
-			const audio = this.audioFormat ?? "bestaudio";
-			args.push("-f", `${video}+${audio}/best`);
-		}
-		if (this.outputDir || this.filenameTemplate) {
-			const dir = this.outputDir ?? "";
-			const file = this.filenameTemplate ?? "%(title)s.%(ext)s";
-			args.push("-o", dir ? `${dir}/${file}` : file);
-		}
+		const args = this.buildArgs();
 		await runYtDlp([...args, this.url]);
 	}
 }
