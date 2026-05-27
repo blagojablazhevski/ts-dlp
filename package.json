@@ -1,5 +1,5 @@
 {
-	"name": "ts-dlp",
+	"name": "@blagoja/ts-dlp",
 	"version": "0.1.0",
 	"description": "A human readable TypeScript wrapper for yt-dlp",
 	"main": "dist/index.js",
