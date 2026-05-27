@@ -1,4 +1,4 @@
-import {runYtDlp} from "./internal/runner.js";
+import {runYtDlp, type RunResult} from "./internal/runner.js";
 import type {AudioCodec, OutputFields, Resolution, VideoExt} from "./types.js";
 
 export class DownloadBuilder {
@@ -11,8 +11,21 @@ export class DownloadBuilder {
 	private videoFps?: number;
 	private videoHeight?: string;
 
-	constructor(private readonly url: string) {}
+	constructor(private readonly url: string) {
+		try {
+			new URL(url);
+		} catch {
+			// This will be caught later by yt-dlp, so we throw a TypeError here to provide a clearer error message.
+			throw new TypeError(`Invalid URL: ${url}`);
+		}
+	}
 
+	/**
+	 * A private method to build the command-line arguments for yt-dlp based on the options set by the user.
+	 * This method constructs the appropriate format filters and output template arguments according to the options set by the user.
+	 *
+	 * @returns The command-line arguments to be passed to yt-dlp based on the specified options.
+	 */
 	private buildArgs(): string[] {
 		const args = [...this.args];
 		if (
@@ -47,8 +60,6 @@ export class DownloadBuilder {
 	 * @returns The current instance of DownloadBuilder for method chaining.
 	 */
 	resolution(res: Resolution): this {
-		// const height = res.replace("p", "");
-		// this.videoFormat = `bestvideo[height<=${height}]`;
 		this.videoHeight = res.replace("p", "");
 		return this;
 	}
@@ -58,7 +69,7 @@ export class DownloadBuilder {
 	 * If not specified, the file will be saved in the current working directory.
 	 *
 	 * @example
-	 * download("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+	 * download("https://www.example.com/video")
 	 * .output("downloads")
 	 * .run();
 	 *
@@ -77,7 +88,7 @@ export class DownloadBuilder {
 	 * If no codec is specified, it will select the best available audio format regardless of codec.
 	 *
 	 * @example // Specifying an audio codec
-	 * download("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+	 * download("https://www.example.com/video")
 	 * .audio("mp3")
 	 * .run();
 	 *
@@ -95,7 +106,7 @@ export class DownloadBuilder {
 	 * If not specified, it will select the best available video format regardless of extension.
 	 *
 	 * @example
-	 * download("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+	 * download("https://www.example.com/video")
 	 * .format("mp4")
 	 * .run();
 	 *
@@ -107,7 +118,20 @@ export class DownloadBuilder {
 		return this;
 	}
 
+	/**
+	 * Set the desired frames per second (FPS) for the video download. You can specify a positive integer value for FPS, such as 30, 60, etc.
+	 * The method will select the best available video format that has an FPS less than or equal to the specified value.
+	 *
+	 * @param fps The desired frames per second (FPS) for the video download.
+	 * You can specify a positive integer value for FPS, such as 30, 60, etc.
+	 * @returns  The current instance of DownloadBuilder for method chaining.
+	 */
 	fps(fps: number): this {
+		if (!Number.isInteger(fps) || fps <= 0) {
+			throw new RangeError(
+				`Invalid FPS value: ${fps}. FPS must be a positive integer.`,
+			);
+		}
 		this.videoFps = fps;
 		return this;
 	}
@@ -118,12 +142,12 @@ export class DownloadBuilder {
 	 * automatically mapped to their values at download time.
 	 *
 	 * @example // Using a string template
-	 * download("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+	 * download("https://www.example.com/video")
 	 * 	.output("downloads")
 	 * 	.filename("%(title)s.%(ext)s")
 	 *
 	 * @example // Using a callback to specify a custom filename template
-	 * download("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+	 * download("https://www.example.com/video")
 	 * 	.output("downloads")
 	 * 	.filename(({ title, ext }) => `${title}.${ext}`)
 	 * 	.run();
@@ -153,7 +177,7 @@ export class DownloadBuilder {
 	 * @throws Will throw an error if yt-dlp is not installed or not in PATH, or if any other error occurs during the execution of yt-dlp.
 	 *
 	 * @example
-	 * download("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+	 * download("https://www.example.com/video")
 	 *  .resolution("720p")
 	 *  .output("downloads/%(title)s.%(ext)s")
 	 *  .run();
@@ -162,5 +186,10 @@ export class DownloadBuilder {
 	async run(): Promise<void> {
 		const args = this.buildArgs();
 		await runYtDlp([...args, this.url]);
+	}
+
+	async capture(): Promise<RunResult> {
+		const args = this.buildArgs();
+		return runYtDlp([...args, this.url], true);
 	}
 }

@@ -82,10 +82,7 @@ You write:
 ```ts
 import {download} from "ts-dlp";
 
-await download("https://youtube.com/watch?v=...")
-	.resolution("1080p")
-	.output("downloads")
-	.run();
+await download(url).resolution("1080p").output("downloads").run();
 ```
 
 ---
@@ -95,7 +92,7 @@ await download("https://youtube.com/watch?v=...")
 ```ts
 import {download} from "ts-dlp";
 
-await download("https://youtube.com/watch?v=...")
+await download(url)
 	.resolution("1080p")
 	.fps(60)
 	.format("mp4")
@@ -165,9 +162,9 @@ await download(url)
 - [x] `.resolution(res)`
 - [x] `.fps(fps)`
 - [x] `.filename(template)`
-- [ ] Error handling
-- [ ] Capture stdout/stderr
-- [ ] Unit test setup
+- [x] Error handling
+- [x] Capture stdout/stderr
+- [x] Unit test setup
 
 ### v0.2.0 - Metadata & Information
 

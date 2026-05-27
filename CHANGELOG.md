@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.4] - 2026-05-27
+
+### Added
+
+- Added `YtDlpError` custom error class with typed `exitCode` and `stderr` properties for yt-dlp process failures
+- Added `YtDlpNotFoundError` custom error class for missing yt-dlp installation
+- Added URL validation in `DownloadBuilder` constructor, throwing `TypeError` on invalid URLs
+- Added input validation in `.fps()`, throwing `RangeError` for non-positive or non-integer values
+- Re-exported `YtDlpError`, `YtDlpNotFoundError`, `Resolution`, `AudioCodec`, `VideoExt`, and `OutputFields` from package entry point
+
+### Modified
+
+- Replaced `handleEnoent` with `handleError` in runner to handle all yt-dlp exit code failures, not just missing binary
+
 ## [0.1.3] - 2026-05-27
 
 ### Added
