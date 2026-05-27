@@ -95,7 +95,7 @@ await download("https://youtube.com/watch?v=...")
 ```ts
 import {download} from "ts-dlp";
 
-await download("https://youtube.com/watch?v=...")
+await download(url)
 	.resolution("1080p")
 	.fps(60)
 	.format("mp4")
