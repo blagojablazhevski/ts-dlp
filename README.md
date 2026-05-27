@@ -163,7 +163,7 @@ await download(url)
 - [x] `.fps(fps)`
 - [x] `.filename(template)`
 - [x] Error handling
-- [ ] Capture stdout/stderr
+- [x] Capture stdout/stderr
 - [x] Unit test setup
 
 ### v0.2.0 - Metadata & Information
