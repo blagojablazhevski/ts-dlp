@@ -164,7 +164,7 @@ await download(url)
 - [x] `.filename(template)`
 - [x] Error handling
 - [ ] Capture stdout/stderr
-- [ ] Unit test setup
+- [x] Unit test setup
 
 ### v0.2.0 - Metadata & Information
 
