@@ -79,7 +79,7 @@ export class DownloadBuilder {
 	 * @param template A callback that receives output fields and returns a filename string. If omitted, defaults to the video title with its original extension.
 	 * @returns The current instance of DownloadBuilder for method chaining.
 	 */
-	filename(template: (fields: OutputFields) => string | string): this {
+	filename(template: ((fields: OutputFields) => string) | string): this {
 		if (typeof template === "string") {
 			this.filenameTemplate = template;
 		} else {
