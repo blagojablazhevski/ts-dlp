@@ -11,8 +11,21 @@ export class DownloadBuilder {
 	private videoFps?: number;
 	private videoHeight?: string;
 
-	constructor(private readonly url: string) {}
+	constructor(private readonly url: string) {
+		try {
+			new URL(url);
+		} catch {
+			// This will be caught later by yt-dlp, so we throw a TypeError here to provide a clearer error message.
+			throw new TypeError(`Invalid URL: ${url}`);
+		}
+	}
 
+	/**
+	 * A private method to build the command-line arguments for yt-dlp based on the options set by the user.
+	 * This method constructs the appropriate format filters and output template arguments according to the options set by the user.
+	 *
+	 * @returns The command-line arguments to be passed to yt-dlp based on the specified options.
+	 */
 	private buildArgs(): string[] {
 		const args = [...this.args];
 		if (
@@ -47,8 +60,6 @@ export class DownloadBuilder {
 	 * @returns The current instance of DownloadBuilder for method chaining.
 	 */
 	resolution(res: Resolution): this {
-		// const height = res.replace("p", "");
-		// this.videoFormat = `bestvideo[height<=${height}]`;
 		this.videoHeight = res.replace("p", "");
 		return this;
 	}
@@ -107,7 +118,20 @@ export class DownloadBuilder {
 		return this;
 	}
 
+	/**
+	 * Set the desired frames per second (FPS) for the video download. You can specify a positive integer value for FPS, such as 30, 60, etc.
+	 * The method will select the best available video format that has an FPS less than or equal to the specified value.
+	 *
+	 * @param fps The desired frames per second (FPS) for the video download.
+	 * You can specify a positive integer value for FPS, such as 30, 60, etc.
+	 * @returns  The current instance of DownloadBuilder for method chaining.
+	 */
 	fps(fps: number): this {
+		if (!Number.isInteger(fps) || fps <= 0) {
+			throw new RangeError(
+				`Invalid FPS value: ${fps}. FPS must be a positive integer.`,
+			);
+		}
 		this.videoFps = fps;
 		return this;
 	}
