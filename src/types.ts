@@ -30,4 +30,14 @@ type OutputFields = {
 	playlist_index: string;
 	autonumber: string;
 };
-export type {Resolution, OutputFields};
+
+type AudioCodec =
+	| "opus"
+	| "aac"
+	| "m4a"
+	| "mp3"
+	| "flac"
+	| "wav"
+	| (string & {});
+
+export type {Resolution, OutputFields, AudioCodec};
