@@ -1,0 +1,8 @@
+# personal vscode extensions
+.history
+
+# node modules
+node_modules
+
+# build output
+dist

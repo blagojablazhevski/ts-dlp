@@ -1,0 +1,29 @@
+{
+	"name": "ts-dlp",
+	"version": "0.1.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsx src/index.ts",
+		"start": "node dist/index.js",
+		"lint": "eslint src"
+	},
+	"keywords": [],
+	"author": "",
+	"files": [
+		"dist"
+	],
+	"license": "ISC",
+	"type": "module",
+	"devDependencies": {
+		"@types/node": "^25.9.1",
+		"eslint": "^10.4.0",
+		"tsx": "^4.22.3",
+		"typescript": "^6.0.3",
+		"typescript-eslint": "^8.60.0"
+	},
+	"dependencies": {
+		"execa": "^9.6.1"
+	}
+}
