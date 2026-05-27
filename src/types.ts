@@ -1,13 +1,12 @@
-type Resolution =
-	| "144p"
-	| "240p"
-	| "360p"
-	| "480p"
-	| "720p"
-	| "1080p"
-	| "1440p"
-	| "2160p"
-	| (string & {});
+type LiteralUnion<T extends string> = T | (string & {});
+
+type Resolution = LiteralUnion<
+	"144p" | "240p" | "360p" | "480p" | "720p" | "1080p" | "1440p" | "2160p"
+>;
+
+type AudioCodec = LiteralUnion<"opus" | "aac" | "m4a" | "mp3" | "flac" | "wav">;
+
+type VideoExt = LiteralUnion<"mp4" | "mov" | "webm" | "flv" | "mkv" | "avi">;
 
 type OutputFields = {
 	title: string;
@@ -31,13 +30,4 @@ type OutputFields = {
 	autonumber: string;
 };
 
-type AudioCodec =
-	| "opus"
-	| "aac"
-	| "m4a"
-	| "mp3"
-	| "flac"
-	| "wav"
-	| (string & {});
-
-export type {Resolution, OutputFields, AudioCodec};
+export type {Resolution, OutputFields, AudioCodec, VideoExt};
