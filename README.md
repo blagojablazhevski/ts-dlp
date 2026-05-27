@@ -165,7 +165,7 @@ await download(url)
 - [x] `.resolution(res)`
 - [x] `.fps(fps)`
 - [x] `.filename(template)`
-- [ ] Error handling
+- [x] Error handling
 - [ ] Capture stdout/stderr
 - [ ] Unit test setup
 
