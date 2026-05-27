@@ -57,7 +57,7 @@ pip install -U yt-dlp
 
 Official project:
 
-TBD
+https://www.npmjs.com/package/@blagoja/ts-dlp
 
 ---
 
