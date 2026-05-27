@@ -1,15 +1,21 @@
 import {execa, ExecaError} from "execa";
+import {YtDlpError, YtDlpNotFoundError} from "../errors.js";
 
 export async function runYtDlp(args: string[]): Promise<void> {
 	await execa("yt-dlp", ["--js-runtimes", "node", ...args], {
 		stdio: "inherit",
-	}).catch(handleEnoent);
+	}).catch(handleError);
 }
 
-export function handleEnoent(error: unknown): never {
-	if (error instanceof ExecaError && error.code === "ENOENT") {
-		throw new Error(
-			"yt-dlp is not installed or not in PATH. Please refer to https://github.com/yt-dlp/yt-dlp#installation",
+function handleError(error: unknown): never {
+	if (error instanceof ExecaError) {
+		if (error.code === "ENOENT") {
+			throw new YtDlpNotFoundError();
+		}
+		throw new YtDlpError(
+			`yt-dlp exited with code ${error.exitCode}`,
+			error.exitCode ?? 1,
+			error.stderr ?? "",
 		);
 	}
 	throw error;
