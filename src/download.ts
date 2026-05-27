@@ -1,4 +1,4 @@
-import {runYtDlp} from "./internal/runner.js";
+import {runYtDlp, type RunResult} from "./internal/runner.js";
 import type {AudioCodec, OutputFields, Resolution, VideoExt} from "./types.js";
 
 export class DownloadBuilder {
@@ -186,5 +186,10 @@ export class DownloadBuilder {
 	async run(): Promise<void> {
 		const args = this.buildArgs();
 		await runYtDlp([...args, this.url]);
+	}
+
+	async capture(): Promise<RunResult> {
+		const args = this.buildArgs();
+		return runYtDlp([...args, this.url], true);
 	}
 }
