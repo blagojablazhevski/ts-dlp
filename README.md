@@ -108,24 +108,19 @@ await ytdlp
 ## v0.1.0 - Foundation
 
 - [x] Detect yt-dlp installation
-- [ ] Execute simple yt-dlp commands
+- [x] Execute simple yt-dlp commands
 - [ ] Basic command runner
 - [ ] Error handling
 - [ ] Capture stdout/stderr
 - [ ] TypeScript support
 - [ ] Unit test setup
-
----
-
-## v0.2.0 - Download API
-
-- [ ] `.download(url)`
-- [ ] `.run()`
-- [ ] `.output(path)`
+- [x] `.download(url)`
+- [x] `.run()`
+- [x] `.output(path)`
 - [ ] `.format(format)`
-- [ ] `.audio()`
+- [x] `.audio()`
 - [ ] `.video()`
-- [ ] `.resolution()`
+- [x] `.resolution()`
 - [ ] `.fps()`
 
 Example:
@@ -136,7 +131,7 @@ await ytdlp.download(url).resolution("720p").run();
 
 ---
 
-## v0.3.0 - Metadata & Information
+## v0.2.0 - Metadata & Information
 
 - [ ] `.info()`
 - [ ] Video metadata parsing
@@ -152,7 +147,7 @@ const info = await ytdlp.info(url);
 
 ---
 
-## v0.4.0 - Advanced Features
+## v0.3.0 - Advanced Features
 
 - [ ] Subtitle support
 - [ ] Thumbnail downloads
@@ -163,7 +158,7 @@ const info = await ytdlp.info(url);
 
 ---
 
-## v0.5.0 - Developer Experience
+## v0.4.0 - Developer Experience
 
 - [ ] Better typed builders
 - [ ] Presets
