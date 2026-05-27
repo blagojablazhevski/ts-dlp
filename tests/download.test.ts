@@ -4,7 +4,7 @@ import {DownloadBuilder} from "../src/download.js";
 import {env} from "./env.js";
 
 vi.mock("../src/internal/runner.js", () => ({
-	runYtDlp: vi.fn().mockResolvedValue(undefined),
+	runYtDlp: vi.fn().mockResolvedValue({stdout: "", stderr: ""}),
 }));
 
 const {TEST_URL} = env;
@@ -155,6 +155,32 @@ describe("DownloadBuilder - output flag", () => {
 			"%(uploader)s - %(title)s.%(ext)s",
 			TEST_URL,
 		]);
+	});
+});
+
+describe("DownloadBuilder.capture()", () => {
+	beforeEach(() => vi.clearAllMocks());
+
+	it("calls runYtDlp with pipe=true", async () => {
+		const runYtDlp = await getRunYtDlp();
+		await download(TEST_URL).capture();
+		expect(runYtDlp).toHaveBeenCalledWith([TEST_URL], true);
+	});
+
+	it("returns the stdout and stderr from runYtDlp", async () => {
+		const runYtDlp = await getRunYtDlp();
+		runYtDlp.mockResolvedValueOnce({stdout: "video output", stderr: "progress"});
+		const result = await download(TEST_URL).capture();
+		expect(result).toEqual({stdout: "video output", stderr: "progress"});
+	});
+
+	it("passes built args before the URL when capturing", async () => {
+		const runYtDlp = await getRunYtDlp();
+		await download(TEST_URL).resolution("720p").capture();
+		expect(runYtDlp).toHaveBeenCalledWith(
+			["-f", "bestvideo[height<=720]+bestaudio/best", TEST_URL],
+			true,
+		);
 	});
 });
 

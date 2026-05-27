@@ -27,16 +27,19 @@ describe("runYtDlp()", () => {
 		vi.clearAllMocks();
 	});
 
-	it("resolves when execa succeeds", async () => {
+	it("resolves with stdout and stderr when execa succeeds", async () => {
 		const {execa} = await import("execa");
-		vi.mocked(execa).mockResolvedValue({} as never);
+		vi.mocked(execa).mockResolvedValue({stdout: "out", stderr: "err"} as never);
 		const {runYtDlp} = await getRunner();
-		await expect(runYtDlp(["--some-flag"])).resolves.toBeUndefined();
+		await expect(runYtDlp(["--some-flag"])).resolves.toEqual({
+			stdout: "out",
+			stderr: "err",
+		});
 	});
 
-	it("passes --js-runtimes node and the provided args to execa", async () => {
+	it("passes --js-runtimes node and the provided args to execa with stdio inherit by default", async () => {
 		const {execa} = await import("execa");
-		vi.mocked(execa).mockResolvedValue({} as never);
+		vi.mocked(execa).mockResolvedValue({stdout: "", stderr: ""} as never);
 		const {runYtDlp} = await getRunner();
 		await runYtDlp(["--foo", "bar"]);
 		expect(execa).toHaveBeenCalledWith(
@@ -44,6 +47,19 @@ describe("runYtDlp()", () => {
 			["--js-runtimes", "node", "--foo", "bar"],
 			expect.objectContaining({stdio: "inherit"}),
 		);
+	});
+
+	it("uses stdio pipe when pipe=true", async () => {
+		const {execa} = await import("execa");
+		vi.mocked(execa).mockResolvedValue({stdout: "captured", stderr: ""} as never);
+		const {runYtDlp} = await getRunner();
+		const result = await runYtDlp(["--foo"], true);
+		expect(execa).toHaveBeenCalledWith(
+			"yt-dlp",
+			["--js-runtimes", "node", "--foo"],
+			expect.objectContaining({stdio: "pipe"}),
+		);
+		expect(result).toEqual({stdout: "captured", stderr: ""});
 	});
 
 	it("throws YtDlpNotFoundError when execa rejects with ENOENT", async () => {
